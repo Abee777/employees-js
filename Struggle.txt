@@ -1,4 +1,4 @@
-I must say the coding challenge was execellent. 
+I must say the coding challenge was excellent.
 I really enjoyed it and I've learned so much deeply about Promises, callbacks and XMLHttpRequest. So simple task yet so profound. 
 Before I've only touched the Promises and avoided them, so it was really nice to learn more about them.
 I also have used callbacks before (but i didn't know that I'm using them :) ).
