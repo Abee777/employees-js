@@ -1,0 +1,262 @@
+I must say the coding challenge was execellent. 
+I really enjoyed it and I've learned so much deeply about Promises, callbacks and XMLHttpRequest. So simple task yet so profound. 
+Before I've only touched the Promises and avoided them, so it was really nice to learn more about them.
+I also have used callbacks before (but i didn't know that I'm using them :) ).
+
+...here is some of my strugle ^^
+
+
+.then(result)=>{console.log({result})},
+	(error) =>{console.log({"We have encountered an Error!"})}
+------------------------------
+RESOURCES:
+https://www.youtube.com/watch?v=82hnvUYY6QA -> AJAX
+
+https://www.youtube.com/watch?v=IGYxfTTpoFg -> Promises
+
+https://www.youtube.com/watch?v=nx8E5BF0XuE -> some of the many errors I encountered
+
+https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Promises -> Promises
+
+https://www.freecodecamp.org/news/javascript-promise-tutorial-how-to-resolve-or-reject-promises-in-js/ -> Resolve & Reject, Callback Hell, Pending, fullfiled, rejected
+
+https://alicemoretti.medium.com/xmlhttprequest-callbacks-and-promises-257a4e63fe9a -> All 3 in the same place, i was happy to find this ^^
+
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise -> more about Promises
+
+https://medium.com/@kellydsample/challenge-3-run-a-vanilla-js-project-in-your-browser-with-node-791e124aa2c6 -> about npm packages
+
+...and ofc chatgpt for further explanations -> I can provide allmost full log
+
+----------------------------------
+
+function getEmplFrom(callback) {
+  return new Promise((resolve, reject) => {
+    var employeesXhr = new XMLHttpRequest();
+    employeesXhr.open('GET', domain + "/employees.json");
+    employeesXhr.onload = function () {
+      if (this.status == 200) {
+        resolve(JSON.parse(this.responseText));
+      } else {
+        reject("There is an Error!");
+      }
+    };
+    employeesXhr.send();
+  })
+    .then((employeesResponse) => {
+      var salariesXhr = new XMLHttpRequest();
+      salariesXhr.open('GET', domain + "/salaries.json");
+      salariesXhr.onload = function () {
+        if (this.status == 200) {
+          var salariesResponse = JSON.parse(this.responseText);
+          var combinedData = combineData(employeesResponse, salariesResponse);
+          resolve(combinedData);
+        } else {
+          reject("There is an Error!");
+        }
+      };
+      salariesXhr.send();
+    })
+    .then((combinedData) => {
+      callback(combinedData); // Invoke the callback function with the combined data
+    })
+    .catch((error) => {
+      console.error("Promise rejected:", error);
+    });
+}
+
+function combineData(employees, salaries) {
+  return employees.map((employee) => {
+    var salaryData = salaries.find((salary) => salary.employeeId === employee.id);
+    var salary = salaryData ? salaryData.salary : null;
+    return {
+      id: employee.id,
+      name: employee.name,
+      salary: salary
+    };
+  });
+}
+
+function handleData(data) {
+  console.log("Combined Data:", data);
+  // Perform further actions with the combined data
+}
+
+getEmplFrom(handleData)
+  .then((data) => {
+    console.log("Promise resolved:", data);
+    // Perform further actions with the resolved data
+  })
+  .catch((error) => {
+    console.error("Promise rejected:", error);
+    // Handle the error case
+  });
+
+
+---------------------------------------------------
+
+var domain = "fake-server";
+
+function getEmplFrom(callback)
+{
+	return new Promise((resolve, reject)=>{
+		var xhr = new XMLHttpRequest();
+		xhr.open('GET', domain + "/salaries.json");
+		xhr.onload = function(e)
+		{
+			if (this.status == 200)
+			{
+				resolve(this.responseText);
+				callback(e);
+			} else {
+				reject(e);	
+			}	
+		}
+		xhr.send();
+	});
+	//  .then((responseText) => {
+    //   callback(responseText); 
+    //   console.log(callback)// Invoke the callback function with the response text
+    // })
+    // .catch((error) => {
+    //   console.error("Promise rejected:", error);
+    // });
+	
+}
+
+function abRmnSal(response)
+{
+	//TODO returns salaries from json //mine: return names
+console.log("Response:", response);
+}
+
+
+function getEmployees()
+{
+
+	//TODO should be exposed function which returns array of employees => for example [{id:"id", "name":"test", "salary":""}]
+}
+
+getEmplFrom(abRmnSal)
+  .then((responseText) => {
+  	console.log("Promise resolved:", responseText);
+    var salaries = JSON.parse(responseText);
+    var arrSalaries = salaries.map((empl)=>empl.salary)
+    console.log(arrSalaries);
+    // var names = employees.map((arr)=>)
+  })
+  .catch((error) => {
+    console.error("Promise rejected:", error);
+    // Handle the error case
+  });
+
+
+
+-----------------
+Now philosophical aproach to this:
+And why I'm providing you all this details. Because I'm walking down the path of Truth. I have nothing to hide. 
+I see everything in teacher student relationship and
+I'm always seaching for good teachers and mentors in everything I do, and by being honest I believe that is the most efficient way to progress. 
+
+Spustam se na nivo da nista ne znam, 
+da bih naucio ono sto stvarno ne znam, 
+a onda dopunio u ono sto vec znam.
+
+------------------------
+
+var domain = "fake-server";
+var arrSalary = [];
+
+function getEmplFrom(callback) {
+  return new Promise((resolve, reject) => {
+    var employeesXhr = new XMLHttpRequest();
+    employeesXhr.open('GET', domain + "/employees.json");
+    employeesXhr.onload = function () {
+      if (this.status == 200) {
+        resolve(JSON.parse(this.responseText));
+        // console.log(this.responseText);
+      } else {
+        reject("There is an Error!");
+      }
+    };
+    employeesXhr.send();
+  })
+    .then((employeesResponse) => {
+    	// console.log(employeesResponse);
+      return new Promise((resolve, reject) => {
+        var salariesXhr = new XMLHttpRequest();
+        salariesXhr.open('GET', domain + "/salaries.json");
+        salariesXhr.onload = function () {
+          if (this.status == 200) {
+            var salariesResponse = JSON.parse(this.responseText);
+            // console.log(salariesResponse);
+            var combinedData = getEmployees(employeesResponse, salariesResponse);
+            // console.log(combinedData);
+            resolve(combinedData);
+          } else {
+            reject("There is an Error!");
+          }
+        };
+        salariesXhr.send();
+      });
+    })
+    .then((combinedData) => {
+      callback(combinedData); // Invoke the callback function with the combined data
+      return combinedData; // Return the combined data as the resolved value
+    })
+    .catch((error) => {
+      console.error("Promise rejected:", error);
+    });
+}
+
+// Returns salaries from json
+function abRmnSal(sal) {
+  console.log("Combined Data func:", sal);
+  arrSalary = sal.map((item) => item.salary);
+  console.log("Salaries: ", arrSalary.join(', '));
+  return arrSalary
+}
+
+function getEmployees(employees, salaries) {
+  return employees.map((employee) => {
+    var salaryData = salaries.find((salary) => salary.employeeId === employee.id);
+    var salary = salaryData ? salaryData.salary : null;
+    return {
+      id: employee.id,
+      name: employee.name,
+      salary: salary
+    };
+  });
+}
+
+function sortCombinedData(combinedData, sortOrder) {
+  return combinedData.sort((a, b) => {
+    if (a.salary === null && b.salary === null) {
+      return 0; // No sorting for objects with null salary
+    } else if (a.salary === null) {
+      return sortOrder === "asc" ? 1 : -1; // Objects with null salary go to the end
+    } else if (b.salary === null) {
+      return sortOrder === "asc" ? -1 : 1; // Objects with null salary go to the end
+    } else {
+      const salaryA = parseInt(a.salary);
+      const salaryB = parseInt(b.salary);
+      return sortOrder === "asc" ? salaryA - salaryB : salaryB - salaryA;
+    }
+  });
+}
+
+// Sort the combined data in ascending order
+var sortedDataAsc = sortCombinedData(arrSalary, "asc");
+console.log("Sorted Data (Ascending):", sortedDataAsc);
+
+// Sort the combined data in descending order
+var sortedDataDesc = sortCombinedData(arrSalary, "desc");
+console.log("Sorted Data (Descending):", sortedDataDesc);
+
+getEmplFrom(abRmnSal);
+
+console.log(12); // serves as refresh for the console
+
+
+
+
